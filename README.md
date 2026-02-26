@@ -133,7 +133,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 ---
 
 <p align="center">
-  <strong>Sprint</strong> v1.0 · Built by <strong>Ric S Kolluri</strong>
+  <strong>Sprint</strong> v1.5 · Built by <strong>Ric S Kolluri</strong>
   <br />
   Copyright &copy; 2026 Ric S Kolluri. All rights reserved.
 </p>
