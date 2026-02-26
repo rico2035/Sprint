@@ -284,7 +284,7 @@ enum CanvasSection {
 // AI service configuration
 interface AIServiceConfig {
   apiKey: string;
-  model: 'openai/gpt-4o' | 'anthropic/claude-3.5-sonnet' | 'moonshot/kimi';
+  model: 'openai/gpt-4o' | 'anthropic/claude-3.5-sonnet';
   temperature: number;
   maxTokens: number;
 }

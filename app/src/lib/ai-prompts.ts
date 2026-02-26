@@ -303,22 +303,39 @@ export const MOCK_AI_RESPONSES: Record<CanvasSectionType, { questions: string[];
 };
 
 // Mock suggestion generation
-export const generateMockSuggestions = (section: CanvasSectionType, input: string): string[] => {
-  const baseSuggestions = MOCK_AI_RESPONSES[section].suggestions;
-  
-  // If user has typed something, filter suggestions that might be relevant
-  if (input.length > 10) {
-    return baseSuggestions.slice(0, 3);
+export const generateMockSuggestions = async (section: CanvasSectionType, input: string): Promise<string[]> => {
+  try {
+    const response = await fetch(\`/api/suggestions?section=\${section}&input=\${encodeURIComponent(input)}\`);
+    if (!response.ok) throw new Error("Failed to fetch");
+    const data = await response.json();
+    return data.suggestions;
+  } catch (error) {
+    console.error("Error fetching AI suggestions:", error);
+    // Fallback
+    const baseSuggestions = MOCK_AI_RESPONSES[section]?.suggestions || [];
+    if (input.length > 10) return baseSuggestions.slice(0, 3);
+    return baseSuggestions;
   }
-  
-  return baseSuggestions;
 };
 
 // Mock question generation
-export const generateMockQuestions = (section: CanvasSectionType): { questions: string[]; context: string } => {
-  const response = MOCK_AI_RESPONSES[section];
-  return {
-    questions: response.questions,
-    context: response.context,
-  };
+export const generateMockQuestions = async (section: CanvasSectionType): Promise<{ questions: string[]; context: string }> => {
+  try {
+    const response = await fetch(\`/api/questions?section=\${section}\`);
+    if (!response.ok) throw new Error("Failed to fetch");
+    const data = await response.json();
+    return {
+      questions: data.questions,
+      context: data.context
+    };
+  } catch (error) {
+    console.error("Error fetching AI questions:", error);
+    // Fallback
+    const fallbackResponse = MOCK_AI_RESPONSES[section];
+    return {
+      questions: fallbackResponse?.questions || [],
+      context: fallbackResponse?.context || "",
+    };
+  }
 };
+

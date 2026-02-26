@@ -28,7 +28,7 @@ export function WizardContainer() {
 
   const { currentCanvas, updateSection } = useCanvasStore();
   const { setRoute, showToast } = useAppStore();
-  
+
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [activeInput, setActiveInput] = useState('');
 
@@ -46,35 +46,29 @@ export function WizardContainer() {
 
   const generateQuestions = async () => {
     if (!currentSection) return;
-    
+
     setGenerating(true);
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1200));
-    
-    // Use mock responses for demo
-    const mockResponse = generateMockQuestions(currentSection);
-    
+
+    // Fetch from backend API
+    const mockResponse = await generateMockQuestions(currentSection);
+
     setAIResponse(currentSection, {
       questions: mockResponse.questions,
       suggestions: [],
       context: mockResponse.context,
     });
-    
+
     setGenerating(false);
   };
 
   const handleGetSuggestions = async () => {
     if (!currentSection) return;
-    
+
     setGenerating(true);
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    const suggestions = generateMockSuggestions(currentSection, activeInput);
+
+    const suggestions = await generateMockSuggestions(currentSection, activeInput);
     setSuggestions(suggestions);
-    
+
     setGenerating(false);
   };
 
@@ -85,9 +79,9 @@ export function WizardContainer() {
 
   const handleUseSuggestion = (suggestion: string) => {
     const questionId = `q_${currentSection}_1`;
-    setAnswers(prev => ({ 
-      ...prev, 
-      [questionId]: prev[questionId] ? `${prev[questionId]}, ${suggestion}` : suggestion 
+    setAnswers(prev => ({
+      ...prev,
+      [questionId]: prev[questionId] ? `${prev[questionId]}, ${suggestion}` : suggestion
     }));
   };
 
@@ -116,12 +110,12 @@ export function WizardContainer() {
     } else {
       // Complete wizard
       completeWizard();
-      
+
       // Save canvas
       if (currentCanvas) {
         await useCanvasStore.getState().saveCanvas();
       }
-      
+
       showToast('Your lean canvas has been created!', 'success');
       setRoute('canvas');
     }
